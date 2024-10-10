@@ -6,18 +6,10 @@ const cors = require('cors');
 
 const app = express();
 
-// Configurar o CORS
-app.use(cors({
-    origin: 'http://localhost:3001',
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
-}));
-
-// Middleware
 app.use(bodyParser.json());
 app.use('/api', postRoutes);
 
-// Conectando com MongoDB
+// Conexão com MongoDB
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/blog-app';
 
 mongoose.connect(mongoURI, {

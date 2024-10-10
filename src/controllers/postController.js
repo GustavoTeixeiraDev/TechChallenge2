@@ -1,57 +1,88 @@
 const Post = require('../models/postModel');
 
-// Listar todos os posts
 exports.getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find();
-        res.json(posts);
+      const posts = await Post.find();
+      res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar posts' });
+      res.status(500).json({ message: "Erro ao buscar posts." });
     }
+  };
+
+exports.getPostById = async (req, res) => {
+try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post não encontrado." });
+    res.status(200).json(post);
+} catch (error) {
+    res.status(500).json({ message: "Erro ao buscar o post." });
+}
 };
 
-// Criar novo post
 exports.createPost = async (req, res) => {
-    const { title, content, author } = req.body;
-    const newPost = new Post({ title, content, author });
-    try {
-        await newPost.save();
-        res.status(201).json(newPost);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao criar post' });
-    }
+try {
+    const newPost = new Post(req.body);
+    await newPost.save();
+    res.status(201).json(newPost);
+} catch (error) {
+    res.status(500).json({ message: "Erro ao criar o post." });
+}
 };
 
-// Atualizar post
+
 exports.updatePost = async (req, res) => {
-    const { id } = req.params;
-    const { title, content, author } = req.body;
-    try {
-        const updatedPost = await Post.findByIdAndUpdate(id, { title, content, author }, { new: true });
-        res.json(updatedPost);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao atualizar post' });
+try {
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedPost) {
+    return res.status(404).json({ message: "Post não encontrado." });
     }
+    res.status(200).json(updatedPost);
+} catch (error) {
+    console.error("Erro ao atualizar o post:", error);
+    res.status(500).json({ message: "Erro ao atualizar o post." });
+}
 };
 
-// Deletar post
+
 exports.deletePost = async (req, res) => {
-    const { id } = req.params;
-    try {
-        await Post.findByIdAndDelete(id);
-        res.json({ message: 'Post deletado com sucesso' });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao deletar post' });
-    }
+try {
+    const deletedPost = await Post.findByIdAndDelete(req.params.id);
+    if (!deletedPost) return res.status(404).json({ message: "Post não encontrado." });
+    res.status(200).json({ message: "Post excluído com sucesso." });
+} catch (error) {
+    res.status(500).json({ message: "Erro ao excluir o post." });
+}
 };
 
-// Buscar post por palavra-chave
 exports.searchPosts = async (req, res) => {
-    const { query } = req.query;
-    try {
-        const posts = await Post.find({ $or: [{ title: { $regex: query, $options: 'i' } }, { content: { $regex: query, $options: 'i' } }] });
-        res.json(posts);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro na busca' });
+    const searchTerm = req.query.q;
+
+    // Verificar se o termo de busca foi fornecido
+    if (!searchTerm) {
+      console.log("Termo de busca não fornecido");
+      return res.status(400).json({ message: "Por favor, forneça um termo de busca." });
     }
-};
+
+    console.log(`Termo de busca recebido: ${searchTerm}`);
+
+    try {
+      // Verificar a consulta antes de rodá-la
+      const posts = await Post.find({
+        $or: [
+          { title: { $regex: searchTerm, $options: 'i' } },
+          { content: { $regex: searchTerm, $options: 'i' } }
+        ]
+      });
+
+      console.log(`Posts encontrados: ${posts.length}`);
+
+      if (posts.length === 0) {
+        return res.status(404).json({ message: "Nenhum post encontrado com esse termo." });
+      }
+
+      res.status(200).json(posts);
+    } catch (error) {
+      console.error("Erro ao buscar posts:", error); // Mostrar erro exato
+      res.status(500).json({ message: "Erro ao buscar posts.", error: error.message });
+    }
+  };
