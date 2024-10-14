@@ -45,17 +45,12 @@ GET /posts/search?query=palavra-chave
 Busca posts por uma palavra-chave no título ou conteúdo.
 
 Como Rodar o Projeto
-Clone o repositório:
-bash
-Copiar código
-git clone https://github.com/usuario/projeto-blogging.git
+Clone o repositório
 Instale as dependências:
-bash
-Copiar código
+
 npm install
 Inicie o servidor:
-bash
-Copiar código
+
 npm start
 Testes
 Execute os testes unitários:
