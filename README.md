@@ -22,23 +22,22 @@ Retorna um post específico pelo ID.
 
 ### POST /posts
 Cria uma nova postagem. O corpo da requisição deve conter:
-```json
+
 {
   "title": "Título do Post",
   "content": "Conteúdo do Post",
   "author": "Nome do Autor"
 }
 
-PUT /posts/
+### PUT /posts/
 Atualiza um post existente pelo ID. O corpo da requisição deve conter:
 
-json
-Copiar código
 {
   "title": "Título Atualizado",
   "content": "Conteúdo Atualizado",
   "author": "Nome do Autor"
 }
+
 DELETE /posts/
 Exclui um post pelo ID.
 
@@ -61,17 +60,12 @@ npm start
 Testes
 Execute os testes unitários:
 
-bash
-Copiar código
 npm test
 Docker
 Para rodar a aplicação com Docker:
 
 Construa a imagem:
-bash
-Copiar código
 docker build -t nome-da-imagem .
 Rode o container:
-bash
-Copiar código
+
 docker run -p 3000:3000 nome-da-imagem
