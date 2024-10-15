@@ -29,8 +29,6 @@ Docker: versão 20.10 ou superior.
 Docker Compose: versão 1.29 ou superior.
 Passos de Instalação
 Clone o repositório:
-
-git clone https://github.com/usuario/blog-app.git
 cd blog-app
 
 Crie os containers Docker:
